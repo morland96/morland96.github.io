@@ -88,17 +88,17 @@
 
 
 
-<meta name="description" content="近日在做SDN相关的工作，在使用NCL的相关Testbed，其集群环境是相对封闭的，想要连入每一台机器需要首先连接一台共用跳板机，但这样很不方便。而且跳板机是没有开放ROOT权限的，所以相关的配置，包括转发X11等种种需求都不能很好的实现。 为了解决这种问题，有很多的方案，在查阅了很多网络资料后，我总结了几个我觉得很有帮助的跳板机相关的技巧。1">
+<meta name="description" content="近日在做SDN相关的工作，在使用NCL的相关Testbed，其集群环境是相对封闭的，想要连入每一台机器需要首先连接一台共用跳板机，但这样很不方便。而且跳板机是没有开放ROOT权限的，所以相关的配置，包括转发X11等种种需求都不能很好的实现。 为了解决这种问题，有很多的方案，在查阅了很多网络资料后，我总结了几个我觉得很有帮助的跳板机相关的技巧。">
 <meta name="keywords" content="network">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SSH通过跳板机连接服务器">
 <meta property="og:url" content="https://morland.github.io/2017/10/31/ssh-jump/index.html">
 <meta property="og:site_name" content="Morland&#39;s blog">
-<meta property="og:description" content="近日在做SDN相关的工作，在使用NCL的相关Testbed，其集群环境是相对封闭的，想要连入每一台机器需要首先连接一台共用跳板机，但这样很不方便。而且跳板机是没有开放ROOT权限的，所以相关的配置，包括转发X11等种种需求都不能很好的实现。 为了解决这种问题，有很多的方案，在查阅了很多网络资料后，我总结了几个我觉得很有帮助的跳板机相关的技巧。1">
-<meta property="og:updated_time" content="2017-10-30T20:25:10.860Z">
+<meta property="og:description" content="近日在做SDN相关的工作，在使用NCL的相关Testbed，其集群环境是相对封闭的，想要连入每一台机器需要首先连接一台共用跳板机，但这样很不方便。而且跳板机是没有开放ROOT权限的，所以相关的配置，包括转发X11等种种需求都不能很好的实现。 为了解决这种问题，有很多的方案，在查阅了很多网络资料后，我总结了几个我觉得很有帮助的跳板机相关的技巧。">
+<meta property="og:updated_time" content="2017-10-30T20:26:13.124Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SSH通过跳板机连接服务器">
-<meta name="twitter:description" content="近日在做SDN相关的工作，在使用NCL的相关Testbed，其集群环境是相对封闭的，想要连入每一台机器需要首先连接一台共用跳板机，但这样很不方便。而且跳板机是没有开放ROOT权限的，所以相关的配置，包括转发X11等种种需求都不能很好的实现。 为了解决这种问题，有很多的方案，在查阅了很多网络资料后，我总结了几个我觉得很有帮助的跳板机相关的技巧。1">
+<meta name="twitter:description" content="近日在做SDN相关的工作，在使用NCL的相关Testbed，其集群环境是相对封闭的，想要连入每一台机器需要首先连接一台共用跳板机，但这样很不方便。而且跳板机是没有开放ROOT权限的，所以相关的配置，包括转发X11等种种需求都不能很好的实现。 为了解决这种问题，有很多的方案，在查阅了很多网络资料后，我总结了几个我觉得很有帮助的跳板机相关的技巧。">
 
 
 
@@ -355,7 +355,7 @@
 
       
         <p>近日在做SDN相关的工作，在使用NCL的相关Testbed，其集群环境是相对封闭的，想要连入每一台机器需要首先连接一台共用跳板机，但这样很不方便。而且跳板机是没有开放ROOT权限的，所以相关的配置，包括转发X11等种种需求都不能很好的实现。</p>
-<p>为了解决这种问题，有很多的方案，在查阅了很多网络资料后，我总结了几个我觉得很有帮助的跳板机相关的技巧。1</p>
+<p>为了解决这种问题，有很多的方案，在查阅了很多网络资料后，我总结了几个我觉得很有帮助的跳板机相关的技巧。</p>
 <a id="more"></a>
 <h2 id="利用SSH转发端口的能力"><a href="#利用SSH转发端口的能力" class="headerlink" title="利用SSH转发端口的能力"></a>利用SSH转发端口的能力</h2><p>众所周知，SSH具有不错的轻型端口转发能力，甚至是通道能力，这是一个不错的属性，你可以直接通过跳板机直接转发远程主机的端口来满足你的绝大部分需求。比如我们需要连接远程主机的SSH可以直接</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ssh -L 2222:&lt;remote-host&gt;:22  user@&lt;jump-server&gt;</div><div class="line"><span class="meta">#</span> 该命令语法为</div><div class="line"><span class="meta">#</span> ssh -L local-port:remote-address:remote-port user@ssh-host</div></pre></td></tr></table></figure>
