@@ -4,6 +4,23 @@
 
     
   <url>
+    <loc>https://morland96.github.io/2017/11/18/static-ip/</loc>
+    <lastmod>2017-11-17T21:49:54.343Z</lastmod>
+    <data>
+        <display>
+        <title>不重启networking的情况下设置静态IP</title>
+        <pubTime>2017-11-17T21:25:11.000Z</pubTime>
+        
+        <tag>linux</tag>
+         
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://morland96.github.io/2017/10/31/ssh-jump/</loc>
     <lastmod>2017-10-30T20:26:38.514Z</lastmod>
     <data>
