@@ -97,7 +97,7 @@
 <meta property="og:url" content="https://morland96.github.io/2017/11/18/static-ip/index.html">
 <meta property="og:site_name" content="Morland&#39;s blog">
 <meta property="og:description" content="一般设置静态IP都是更改配置文件然后sudo service networking restart ，但是有些时候不方便重启networking服务（多网卡，并且其他网卡正在工作的情况下）。Google了一下发现其实不用重启networking也可以刷新IP，这里记录一下">
-<meta property="og:updated_time" content="2017-11-17T21:49:54.343Z">
+<meta property="og:updated_time" content="2017-11-23T18:05:16.036Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="不重启networking的情况下设置静态IP">
 <meta name="twitter:description" content="一般设置静态IP都是更改配置文件然后sudo service networking restart ，但是有些时候不方便重启networking服务（多网卡，并且其他网卡正在工作的情况下）。Google了一下发现其实不用重启networking也可以刷新IP，这里记录一下">
@@ -398,13 +398,17 @@
 <blockquote>
 <p>本文环境为 Ubuntu 14.04</p>
 </blockquote>
-<p>首先更改<code>/etc/network/interfaces</code></p>
+<h1 id="更改文件实现更改ip地址"><a href="#更改文件实现更改ip地址" class="headerlink" title="更改文件实现更改ip地址"></a>更改文件实现更改ip地址</h1><p>首先更改<code>/etc/network/interfaces</code></p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span> Something</div><div class="line"><span class="meta">#</span> 省略之前的回路iface等行，下面为实际变更的地方</div><div class="line">auto eth0 # 更具自己情况更改对应的设备id</div><div class="line">iface eth0 inet static</div><div class="line">	address 172.16.64.11 # 静态IP</div><div class="line">	netmask 255.255.255.0</div><div class="line"><span class="meta">	#</span> gateway xxx.xxx.xxx.xxx</div><div class="line"><span class="meta">	#</span> brodcast xxx.xxx.xxx.xxx</div><div class="line"><span class="meta">	#</span> dns-search example.com</div><div class="line"><span class="meta">	#</span> dns-nameservers 8.8.8.8</div><div class="line"><span class="meta">	#</span> 因为我只是单纯的内网集群，所以没有网管，请根据自己的实际情况更改。</div></pre></td></tr></table></figure>
 <p>然后依次执行</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sudo ifconfig eth0 down</div><div class="line">sudo ip addr flush eth0</div><div class="line">sudo ifup eth0</div></pre></td></tr></table></figure>
 <p>然后执行 <code>ip addr</code> 检查是否正确分配了ip地址</p>
 <p>这里为什么说一下关闭个启用网卡的时候用的是不同的方法，如果你之前的网卡是自动分配的ip地址，那么有可能你直接ifdown的话会提示你<code>ifdown: interface eth0 not configured</code> ，但这时候ifconfig是可以正确关闭网卡的。之后如果使用ifconfig来启动网卡，可能并不会正确的获取到ip地址，所以我ifup了网卡。</p>
-<p>如果有更好的办法请在下面留言告诉我。</p>
+<h1 id="利用ifconfig直接更改"><a href="#利用ifconfig直接更改" class="headerlink" title="利用ifconfig直接更改"></a>利用ifconfig直接更改</h1><p>当然其实这里还有更加直接暴力的方法。！！！！！！！！！</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo ifconfig eth1 xxx.xxx.xxx.xxx/xx</div></pre></td></tr></table></figure>
+<p>一步命令直接到位，其中 <code>xxx.xxx.xxx.xxx/xx</code> 前面是ip，后面是子网掩码，比如255.255.255.0 对应的是24,不过这里有个问题就是，这个ip地址是一次性的，重启之后就会消失，如果需要持久化的ip还是请使用第一种方法来更改ip</p>
+<p>附赠一个实例，我这里有一个集群，我需要执行初始化脚本配置他们，其中集群的hostname已经被按照顺序命名好了，依次为node1，node2，node3……，在初始化脚本中，我通过下面的方法给每个node都配置了一个ip地址（node数量不多，所以我通过简单的开头加1的方法避开了网关地址）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">index=$(echo $&#123;HOSTNAME%%.*&#125;|sed -r  's/^[^0-9]*([0-9]+).*/\1/')</div><div class="line">sudo ifconfig eth1 172.16.4.1$index/24</div></pre></td></tr></table></figure>
 
       
     </div>
@@ -504,8 +508,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.png"
@@ -587,6 +600,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#更改文件实现更改ip地址"><span class="nav-number">1.</span> <span class="nav-text">更改文件实现更改ip地址</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#利用ifconfig直接更改"><span class="nav-number">2.</span> <span class="nav-text">利用ifconfig直接更改</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
